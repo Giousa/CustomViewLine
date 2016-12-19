@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -28,11 +27,6 @@ public class NumberProgressView extends View {
     private int paintProgressWidth = 10;
 
     /**
-     * 左侧已完成进度条的颜色
-     */
-    private int paintLeftColor = 0xff67aae4;
-
-    /**
      * Contxt
      */
     private Context context;
@@ -47,10 +41,6 @@ public class NumberProgressView extends View {
      */
     private int mViewWidth;
 
-    /**
-     * 画左边已完成进度条的画笔
-     */
-    private Paint paintleft = new Paint();
 
     /**
      * 画中间的百分比文字的画笔
@@ -69,6 +59,18 @@ public class NumberProgressView extends View {
     private int mCurrentHeight = 20;
     private Bitmap mBitmap;
 
+    private Paint mPaintOne = new Paint();
+    private Paint mPaintTwo = new Paint();
+    private Paint mPaintThree = new Paint();
+    private Paint mPaintFour = new Paint();
+    private Paint mPaintFive = new Paint();
+
+    private Path mPathOne;
+    private Path mPathTwo;
+    private Path mPathThree;
+    private Path mPathFour;
+    private Path mPathFive;
+
 
     public NumberProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -85,12 +87,33 @@ public class NumberProgressView extends View {
         //设置进度条画笔的宽度
         int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
 
-        // 已完成进度条画笔的属性
-        paintleft.setColor(paintLeftColor);
-//        paintleft.setColor(Color.TRANSPARENT);
-        paintleft.setStrokeWidth(paintProgressWidthPx);
-        paintleft.setAntiAlias(true);
-        paintleft.setStyle(Paint.Style.STROKE);
+//        Shader mShader = new LinearGradient(0,0,40,60,new int[] {Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW},null, Shader.TileMode.REPEAT);
+//        paintleft.setShader(mShader);
+
+        mPaintOne.setColor(Color.BLUE);
+        mPaintOne.setStrokeWidth(paintProgressWidthPx);
+        mPaintOne.setAntiAlias(true);
+        mPaintOne.setStyle(Paint.Style.STROKE);
+
+        mPaintTwo.setColor(Color.YELLOW);
+        mPaintTwo.setStrokeWidth(paintProgressWidthPx);
+        mPaintTwo.setAntiAlias(true);
+        mPaintTwo.setStyle(Paint.Style.STROKE);
+
+        mPaintThree.setColor(Color.RED);
+        mPaintThree.setStrokeWidth(paintProgressWidthPx);
+        mPaintThree.setAntiAlias(true);
+        mPaintThree.setStyle(Paint.Style.STROKE);
+
+        mPaintFour.setColor(Color.GRAY);
+        mPaintFour.setStrokeWidth(paintProgressWidthPx);
+        mPaintFour.setAntiAlias(true);
+        mPaintFour.setStyle(Paint.Style.STROKE);
+
+        mPaintFive.setColor(Color.BLACK);
+        mPaintFive.setStrokeWidth(paintProgressWidthPx);
+        mPaintFive.setAntiAlias(true);
+        mPaintFive.setStyle(Paint.Style.STROKE);
 
     }
 
@@ -111,13 +134,19 @@ public class NumberProgressView extends View {
         mViewWidth = getMeasuredWidth();
         totalMovedLength = mViewWidth - bitmapWidth;
         Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
+
+
+        //若是将路径放入OnDraw方法中，则再次点击开始，可以重头绘制
+        mPathOne = new Path();
+        mPathTwo = new Path();
+        mPathThree = new Path();
+        mPathFour = new Path();
+        mPathFive = new Path();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        Path path = new Path();
 
         //得到float型进度
         float progressFloat = progress / 100.0f;
@@ -128,61 +157,77 @@ public class NumberProgressView extends View {
 
         if(progressFloat >= 0 && progressFloat < 0.2){
             mCurrentHeight = 20;
-            path.moveTo(0,mCurrentHeight);
-            path.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathOne.moveTo(0,mCurrentHeight);
+            mPathOne.lineTo(currentMovedLentgh,mCurrentHeight);
+            canvas.drawPath(mPathOne,mPaintOne);
         }else if(progressFloat >= 0.2 && progressFloat < 0.3){
             mCurrentHeight = 50;
 
-            path.moveTo(0,20);
-            path.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(0,20);
+            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            canvas.drawPath(mPathOne,mPaintOne);
 
-            path.moveTo(totalMovedLength*0.2f,mCurrentHeight);
-            path.lineTo(currentMovedLentgh,mCurrentHeight);
-
+            mPathTwo.moveTo(totalMovedLength*0.2f,mCurrentHeight);
+            mPathTwo.lineTo(currentMovedLentgh,mCurrentHeight);
+            canvas.drawPath(mPathTwo,mPaintTwo);
         }else if(progressFloat >= 0.3 && progressFloat < 0.4){
             mCurrentHeight = 80;
 
-            path.moveTo(0,20);
-            path.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(0,20);
+            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            canvas.drawPath(mPathOne,mPaintOne);
 
-            path.moveTo(totalMovedLength*0.2f,50);
-            path.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(totalMovedLength*0.2f,50);
+            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            canvas.drawPath(mPathTwo,mPaintTwo);
 
-            path.moveTo(totalMovedLength*0.3f,mCurrentHeight);
-            path.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathThree.moveTo(totalMovedLength*0.3f,mCurrentHeight);
+            mPathThree.lineTo(currentMovedLentgh,mCurrentHeight);
+
+            canvas.drawPath(mPathThree,mPaintThree);
         }else if(progressFloat >= 0.4 && progressFloat < 0.7){
             mCurrentHeight = 20;
 
-            path.moveTo(0,20);
-            path.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(0,20);
+            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            canvas.drawPath(mPathOne,mPaintOne);
 
-            path.moveTo(totalMovedLength*0.2f,50);
-            path.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(totalMovedLength*0.2f,50);
+            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            canvas.drawPath(mPathTwo,mPaintTwo);
 
-            path.moveTo(totalMovedLength*0.3f,80);
-            path.lineTo(totalMovedLength*0.4f,80);
+            mPathThree.moveTo(totalMovedLength*0.3f,80);
+            mPathThree.lineTo(totalMovedLength*0.4f,80);
+            canvas.drawPath(mPathThree,mPaintThree);
 
-            path.moveTo(totalMovedLength*0.4f,mCurrentHeight);
-            path.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathFour.moveTo(totalMovedLength*0.4f,mCurrentHeight);
+            mPathFour.lineTo(currentMovedLentgh,mCurrentHeight);
+
+            canvas.drawPath(mPathFour,mPaintFour);
         }else if(progressFloat >= 0.7 && progressFloat <= 1.0){
             mCurrentHeight = 50;
 
-            path.moveTo(0,20);
-            path.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(0,20);
+            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            canvas.drawPath(mPathOne,mPaintOne);
 
-            path.moveTo(totalMovedLength*0.2f,50);
-            path.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(totalMovedLength*0.2f,50);
+            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            canvas.drawPath(mPathTwo,mPaintTwo);
 
-            path.moveTo(totalMovedLength*0.3f,80);
-            path.lineTo(totalMovedLength*0.4f,80);
+            mPathThree.moveTo(totalMovedLength*0.3f,80);
+            mPathThree.lineTo(totalMovedLength*0.4f,80);
+            canvas.drawPath(mPathThree,mPaintThree);
 
-            path.moveTo(totalMovedLength*0.4f,20);
-            path.lineTo(totalMovedLength*0.7f,20);
+            mPathFour.moveTo(totalMovedLength*0.4f,20);
+            mPathFour.lineTo(totalMovedLength*0.7f,20);
+            canvas.drawPath(mPathFour,mPaintFour);
 
-            path.moveTo(totalMovedLength*0.7f,mCurrentHeight);
-            path.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathFive.moveTo(totalMovedLength*0.7f,mCurrentHeight);
+            mPathFive.lineTo(currentMovedLentgh,mCurrentHeight);
+
+            canvas.drawPath(mPathFive,mPaintFive);
         }
-        canvas.drawPath(path,paintleft);
 
         canvas.drawBitmap(mBitmap,currentMovedLentgh,0,paintPointer);
 
