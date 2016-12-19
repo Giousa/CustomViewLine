@@ -47,11 +47,6 @@ public class NumberProgressView extends View {
     private int mViewWidth;
 
     /**
-     * 得到自定义视图的Y轴中心点
-     */
-    private int viewCenterY;
-
-    /**
      * 画左边已完成进度条的画笔
      */
     private Paint paintleft = new Paint();
@@ -60,21 +55,6 @@ public class NumberProgressView extends View {
      * 画中间的百分比文字的画笔
      */
     private Paint paintText = new Paint();
-
-    /**
-     * 要画的文字的宽度
-     */
-    private int textWidth;
-
-    /**
-     * 画文字时底部的坐标
-     */
-    private float textBottomY;
-
-    /**
-     * 包裹文字的矩形
-     */
-    private Rect rect = new Rect();
 
     /**
      * 文字总共移动的长度（即从0%到100%文字左侧移动的长度）
@@ -127,7 +107,6 @@ public class NumberProgressView extends View {
         //得到自定义视图的高度
         mViewHeight = getMeasuredHeight();
         mViewWidth = getMeasuredWidth();
-        viewCenterY = mViewHeight / 2;
         totalMovedLength = mViewWidth - bitmapWidth;
         Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
     }
@@ -141,7 +120,7 @@ public class NumberProgressView extends View {
         //得到float型进度
         float progressFloat = progress / 100.0f;
 
-        //当前文字移动的长度
+        //当前指针移动的长度
         float currentMovedLentgh = totalMovedLength * progressFloat;
         Log.d(TAG,"progressFloat="+progressFloat+"    currentMovedLentgh="+currentMovedLentgh);
 
