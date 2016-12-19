@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -87,10 +89,10 @@ public class NumberProgressView extends View {
         //设置进度条画笔的宽度
         int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
 
-//        Shader mShader = new LinearGradient(0,0,40,60,new int[] {Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW},null, Shader.TileMode.REPEAT);
-//        paintleft.setShader(mShader);
+        Shader mShaderOne = new LinearGradient(0,0,40,60,new int[] {Color.BLUE,Color.YELLOW},null, Shader.TileMode.REPEAT);
+        mPaintOne.setShader(mShaderOne);
 
-        mPaintOne.setColor(Color.BLUE);
+//        mPaintOne.setColor(Color.BLUE);
         mPaintOne.setStrokeWidth(paintProgressWidthPx);
         mPaintOne.setAntiAlias(true);
         mPaintOne.setStyle(Paint.Style.STROKE);

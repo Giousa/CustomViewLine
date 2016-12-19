@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="colorOne_1">#FF4081</color>
+    <color name="colorOne_2">#FF4081</color>
+
+    <color name="colorTwo_1">#FF4081</color>
+    <color name="colorTwo_2">#FF4081</color>
+
+    <color name="colorThree_1">#FF4081</color>
+    <color name="colorThree_2">#FF4081</color>
+
+    <color name="colorFour_1">#FF4081</color>
+    <color name="colorFour_2">#FF4081</color>
+
+    <color name="colorFive_1">#FF4081</color>
+    <color name="colorFive_2">#FF4081</color>
 </resources>
