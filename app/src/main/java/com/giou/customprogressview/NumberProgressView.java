@@ -4,11 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -29,19 +27,9 @@ public class NumberProgressView extends View {
     private int paintProgressWidth = 10;
 
     /**
-     * 文字百分比的字体大小（sp）
-     */
-    private int paintTextSize = 20;
-
-    /**
      * 左侧已完成进度条的颜色
      */
     private int paintLeftColor = 0xff67aae4;
-
-    /**
-     * 百分比文字的颜色
-     */
-    private int paintTextColor = 0xffff0077;
 
     /**
      * Contxt
@@ -98,7 +86,7 @@ public class NumberProgressView extends View {
      * 当前进度条高度
      */
     private int mCurrentHeight = 20;
-
+    private Bitmap mBitmap;
 
 
     public NumberProgressView(Context context, AttributeSet attrs) {
@@ -116,20 +104,11 @@ public class NumberProgressView extends View {
         //设置进度条画笔的宽度
         int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
 
-        //设置百分比文字的尺寸
-        int paintTextSizePx = Utils.sp2px(context, paintTextSize);
-
         // 已完成进度条画笔的属性
         paintleft.setColor(paintLeftColor);
         paintleft.setStrokeWidth(paintProgressWidthPx);
         paintleft.setAntiAlias(true);
         paintleft.setStyle(Paint.Style.STROKE);
-
-        // 百分比文字画笔的属性
-        paintText.setColor(paintTextColor);
-        paintText.setTextSize(paintTextSizePx);
-        paintText.setAntiAlias(true);
-        paintText.setTypeface(Typeface.DEFAULT_BOLD);
 
     }
 
@@ -142,16 +121,14 @@ public class NumberProgressView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        //得到包围文字的矩形的宽高
-        paintText.getTextBounds("000%", 0, "000%".length(), rect);
-        textWidth = rect.width();
-        textBottomY = viewCenterY + rect.height() / 2;
+        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.player_speed_pointer);
+        int bitmapWidth = mBitmap.getWidth();
 
         //得到自定义视图的高度
         mViewHeight = getMeasuredHeight();
         mViewWidth = getMeasuredWidth();
         viewCenterY = mViewHeight / 2;
-        totalMovedLength = mViewWidth - textWidth;
+        totalMovedLength = mViewWidth - bitmapWidth;
         Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
     }
 
@@ -227,10 +204,7 @@ public class NumberProgressView extends View {
 
         canvas.drawPath(path,paintleft);
 
-        canvas.drawText(progress + "%", currentMovedLentgh, textBottomY, paintText);
-
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.player_speed_pointer);
-//        canvas.drawBitmap(bitmap,currentMovedLentgh,textBottomY,paintText);
+        canvas.drawBitmap(mBitmap,currentMovedLentgh,0,paintText);
 
     }
 
