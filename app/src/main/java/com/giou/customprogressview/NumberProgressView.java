@@ -1,8 +1,12 @@
 package com.giou.customprogressview;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -22,7 +26,7 @@ public class NumberProgressView extends View {
     /**
      * 进度条画笔的宽度（dp）
      */
-    private int paintProgressWidth = 3;
+    private int paintProgressWidth = 10;
 
     /**
      * 文字百分比的字体大小（sp）
@@ -33,11 +37,6 @@ public class NumberProgressView extends View {
      * 左侧已完成进度条的颜色
      */
     private int paintLeftColor = 0xff67aae4;
-
-    /**
-     * 右侧未完成进度条的颜色
-     */
-    private int paintRightColor = 0xffaaaaaa;
 
     /**
      * 百分比文字的颜色
@@ -57,7 +56,7 @@ public class NumberProgressView extends View {
     /**
      * 得到自定义视图的宽度
      */
-    private int viewWidth;
+    private int mViewWidth;
 
     /**
      * 得到自定义视图的Y轴中心点
@@ -68,11 +67,6 @@ public class NumberProgressView extends View {
      * 画左边已完成进度条的画笔
      */
     private Paint paintleft = new Paint();
-
-    /**
-     * 画右边未完成进度条的画笔
-     */
-    private Paint paintRight = new Paint();
 
     /**
      * 画中间的百分比文字的画笔
@@ -98,6 +92,14 @@ public class NumberProgressView extends View {
      * 文字总共移动的长度（即从0%到100%文字左侧移动的长度）
      */
     private int totalMovedLength;
+    private int mViewHeight;
+
+    /**
+     * 当前进度条高度
+     */
+    private int mCurrentHeight = 20;
+
+
 
     public NumberProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -121,13 +123,7 @@ public class NumberProgressView extends View {
         paintleft.setColor(paintLeftColor);
         paintleft.setStrokeWidth(paintProgressWidthPx);
         paintleft.setAntiAlias(true);
-        paintleft.setStyle(Paint.Style.FILL);
-
-        // 未完成进度条画笔的属性
-        paintRight.setColor(paintRightColor);
-        paintRight.setStrokeWidth(paintProgressWidthPx);
-        paintRight.setAntiAlias(true);
-        paintRight.setStyle(Paint.Style.FILL);
+        paintleft.setStyle(Paint.Style.STROKE);
 
         // 百分比文字画笔的属性
         paintText.setColor(paintTextColor);
@@ -137,16 +133,14 @@ public class NumberProgressView extends View {
 
     }
 
+    /**
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        getWidthAndHeight();
-    }
-
-    /**
-     * 得到视图等的高度宽度尺寸数据
-     */
-    private void getWidthAndHeight() {
 
         //得到包围文字的矩形的宽高
         paintText.getTextBounds("000%", 0, "000%".length(), rect);
@@ -154,16 +148,18 @@ public class NumberProgressView extends View {
         textBottomY = viewCenterY + rect.height() / 2;
 
         //得到自定义视图的高度
-        int viewHeight = getMeasuredHeight();
-        viewWidth = getMeasuredWidth();
-        viewCenterY = viewHeight / 2;
-        totalMovedLength = viewWidth - textWidth;
-
+        mViewHeight = getMeasuredHeight();
+        mViewWidth = getMeasuredWidth();
+        viewCenterY = mViewHeight / 2;
+        totalMovedLength = mViewWidth - textWidth;
+        Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        Path path = new Path();
 
         //得到float型进度
         float progressFloat = progress / 100.0f;
@@ -172,20 +168,70 @@ public class NumberProgressView extends View {
         float currentMovedLentgh = totalMovedLength * progressFloat;
         Log.d(TAG,"progressFloat="+progressFloat+"    currentMovedLentgh="+currentMovedLentgh);
 
-        //画左侧已经完成的进度条，长度为从Veiw左端到文字的左侧
-        canvas.drawLine(0, viewCenterY, currentMovedLentgh, viewCenterY, paintleft);
+        if(progressFloat >= 0 && progressFloat < 0.2){
+            mCurrentHeight = 20;
+            path.moveTo(0,mCurrentHeight);
+            path.lineTo(currentMovedLentgh,mCurrentHeight);
+        }else if(progressFloat >= 0.2 && progressFloat < 0.3){
+            mCurrentHeight = 50;
 
-        //画右侧未完成的进度条，这个进度条的长度不是严格按照百分比来缩放的，因为文字的长度会变化，所以它的长度缩放比例也会变化
-        if (progress < 10) {
-            canvas.drawLine(currentMovedLentgh + textWidth * 0.5f, viewCenterY, viewWidth, viewCenterY, paintRight);
-        } else if (progress < 100) {
-            canvas.drawLine(currentMovedLentgh + textWidth * 0.75f, viewCenterY, viewWidth, viewCenterY, paintRight);
-        } else {
-            canvas.drawLine(currentMovedLentgh + textWidth, viewCenterY, viewWidth, viewCenterY, paintRight);
+            path.moveTo(0,20);
+            path.lineTo(totalMovedLength*0.2f,20);
+
+            path.moveTo(totalMovedLength*0.2f,mCurrentHeight);
+            path.lineTo(currentMovedLentgh,mCurrentHeight);
+
+        }else if(progressFloat >= 0.3 && progressFloat < 0.4){
+            mCurrentHeight = 80;
+
+            path.moveTo(0,20);
+            path.lineTo(totalMovedLength*0.2f,20);
+
+            path.moveTo(totalMovedLength*0.2f,50);
+            path.lineTo(totalMovedLength*0.3f,50);
+
+            path.moveTo(totalMovedLength*0.3f,mCurrentHeight);
+            path.lineTo(currentMovedLentgh,mCurrentHeight);
+        }else if(progressFloat >= 0.4 && progressFloat < 0.7){
+            mCurrentHeight = 20;
+
+            path.moveTo(0,20);
+            path.lineTo(totalMovedLength*0.2f,20);
+
+            path.moveTo(totalMovedLength*0.2f,50);
+            path.lineTo(totalMovedLength*0.3f,50);
+
+            path.moveTo(totalMovedLength*0.3f,80);
+            path.lineTo(totalMovedLength*0.4f,80);
+
+            path.moveTo(totalMovedLength*0.4f,mCurrentHeight);
+            path.lineTo(currentMovedLentgh,mCurrentHeight);
+        }else if(progressFloat >= 0.7 && progressFloat <= 1.0){
+            mCurrentHeight = 50;
+
+            path.moveTo(0,20);
+            path.lineTo(totalMovedLength*0.2f,20);
+
+            path.moveTo(totalMovedLength*0.2f,50);
+            path.lineTo(totalMovedLength*0.3f,50);
+
+            path.moveTo(totalMovedLength*0.3f,80);
+            path.lineTo(totalMovedLength*0.4f,80);
+
+            path.moveTo(totalMovedLength*0.4f,20);
+            path.lineTo(totalMovedLength*0.7f,20);
+
+            path.moveTo(totalMovedLength*0.7f,mCurrentHeight);
+            path.lineTo(currentMovedLentgh,mCurrentHeight);
         }
 
-        //画文字(注意：文字要最后画，因为文字和进度条可能会有重合部分，所以要最后画文字，用文字盖住重合的部分)
+        canvas.drawPath(path,paintleft);
+
         canvas.drawText(progress + "%", currentMovedLentgh, textBottomY, paintText);
+
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.player_speed_pointer);
+//        canvas.drawBitmap(bitmap,currentMovedLentgh,textBottomY,paintText);
+
     }
 
     /**
