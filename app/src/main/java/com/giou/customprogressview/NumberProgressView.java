@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -54,7 +55,7 @@ public class NumberProgressView extends View {
     /**
      * 画中间的百分比文字的画笔
      */
-    private Paint paintText = new Paint();
+    private Paint paintPointer = new Paint();
 
     /**
      * 文字总共移动的长度（即从0%到100%文字左侧移动的长度）
@@ -86,6 +87,7 @@ public class NumberProgressView extends View {
 
         // 已完成进度条画笔的属性
         paintleft.setColor(paintLeftColor);
+//        paintleft.setColor(Color.TRANSPARENT);
         paintleft.setStrokeWidth(paintProgressWidthPx);
         paintleft.setAntiAlias(true);
         paintleft.setStyle(Paint.Style.STROKE);
@@ -180,10 +182,9 @@ public class NumberProgressView extends View {
             path.moveTo(totalMovedLength*0.7f,mCurrentHeight);
             path.lineTo(currentMovedLentgh,mCurrentHeight);
         }
-
         canvas.drawPath(path,paintleft);
 
-        canvas.drawBitmap(mBitmap,currentMovedLentgh,0,paintText);
+        canvas.drawBitmap(mBitmap,currentMovedLentgh,0,paintPointer);
 
     }
 
