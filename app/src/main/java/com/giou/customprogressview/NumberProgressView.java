@@ -78,6 +78,8 @@ public class NumberProgressView extends View {
 
     private int mLeftViewWidth = 64;
 
+    private Shader mShaderOne;
+
 
     public NumberProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -91,12 +93,14 @@ public class NumberProgressView extends View {
      */
     private void initData() {
 
+
+
+
         //设置进度条画笔的宽度
 //        int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
         int paintProgressWidthPx = 27;
 
-        Shader mShaderOne = new LinearGradient(0,0,40,60,new int[] {Color.BLUE,Color.YELLOW},null, Shader.TileMode.REPEAT);
-        mPaintOne.setShader(mShaderOne);
+
 
 //        mPaintOne.setColor(Color.BLUE);
         mPaintOne.setStrokeWidth(paintProgressWidthPx);
@@ -142,6 +146,12 @@ public class NumberProgressView extends View {
         mViewWidth = getMeasuredWidth();
         totalMovedLength = mViewWidth - bitmapWidth - mLeftViewWidth;
         Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
+
+        //渐变色
+        mShaderOne = new LinearGradient(mLeftViewWidth,mHeightOne, (float) (0.2*totalMovedLength+mLeftViewWidth),
+                mHeightOne,new int[] {Color.parseColor("#487e9b"),Color.parseColor("#10609a")},
+                null, Shader.TileMode.CLAMP);
+        mPaintOne.setShader(mShaderOne);
 
 
         //若是将路径放入OnDraw方法中，则再次点击开始，可以重头绘制
