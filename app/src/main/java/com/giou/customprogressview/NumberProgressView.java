@@ -55,10 +55,6 @@ public class NumberProgressView extends View {
     private int totalMovedLength;
     private int mViewHeight;
 
-    /**
-     * 当前进度条高度
-     */
-    private int mCurrentHeight = 20;
     private Bitmap mBitmap;
 
     private Paint mPaintOne = new Paint();
@@ -72,6 +68,15 @@ public class NumberProgressView extends View {
     private Path mPathThree;
     private Path mPathFour;
     private Path mPathFive;
+
+    private int mOffset = 12;
+    private int mHeightOne = 55+mOffset;
+    private int mHeightTwo = 0+mOffset;
+    private int mHeightThree = 55+mOffset;
+    private int mHeightFour = 28+mOffset;
+    private int mHeightFive = 55+mOffset;
+
+    private int mLeftViewWidth = 64;
 
 
     public NumberProgressView(Context context, AttributeSet attrs) {
@@ -87,7 +92,8 @@ public class NumberProgressView extends View {
     private void initData() {
 
         //设置进度条画笔的宽度
-        int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
+//        int paintProgressWidthPx = Utils.dip2px(context, paintProgressWidth);
+        int paintProgressWidthPx = 27;
 
         Shader mShaderOne = new LinearGradient(0,0,40,60,new int[] {Color.BLUE,Color.YELLOW},null, Shader.TileMode.REPEAT);
         mPaintOne.setShader(mShaderOne);
@@ -134,7 +140,7 @@ public class NumberProgressView extends View {
         //得到自定义视图的高度
         mViewHeight = getMeasuredHeight();
         mViewWidth = getMeasuredWidth();
-        totalMovedLength = mViewWidth - bitmapWidth;
+        totalMovedLength = mViewWidth - bitmapWidth - mLeftViewWidth;
         Log.d(TAG,"mViewWidth="+mViewWidth+" mViewHeight="+mViewHeight);//100 440
 
 
@@ -158,80 +164,75 @@ public class NumberProgressView extends View {
         Log.d(TAG,"progressFloat="+progressFloat+"    currentMovedLentgh="+currentMovedLentgh);
 
         if(progressFloat >= 0 && progressFloat < 0.2){
-            mCurrentHeight = 20;
-            mPathOne.moveTo(0,mCurrentHeight);
-            mPathOne.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathOne.moveTo(mLeftViewWidth,mHeightOne);
+            mPathOne.lineTo(mLeftViewWidth+currentMovedLentgh,mHeightOne);
             canvas.drawPath(mPathOne,mPaintOne);
         }else if(progressFloat >= 0.2 && progressFloat < 0.3){
-            mCurrentHeight = 50;
 
-            mPathOne.moveTo(0,20);
-            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(mLeftViewWidth,mHeightOne);
+            mPathOne.lineTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightOne);
             canvas.drawPath(mPathOne,mPaintOne);
 
-            mPathTwo.moveTo(totalMovedLength*0.2f,mCurrentHeight);
-            mPathTwo.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathTwo.moveTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightTwo);
+            mPathTwo.lineTo(mLeftViewWidth+currentMovedLentgh,mHeightTwo);
             canvas.drawPath(mPathTwo,mPaintTwo);
         }else if(progressFloat >= 0.3 && progressFloat < 0.4){
-            mCurrentHeight = 80;
 
-            mPathOne.moveTo(0,20);
-            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(mLeftViewWidth,mHeightOne);
+            mPathOne.lineTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightOne);
             canvas.drawPath(mPathOne,mPaintOne);
 
-            mPathTwo.moveTo(totalMovedLength*0.2f,50);
-            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightTwo);
+            mPathTwo.lineTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightTwo);
             canvas.drawPath(mPathTwo,mPaintTwo);
 
-            mPathThree.moveTo(totalMovedLength*0.3f,mCurrentHeight);
-            mPathThree.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathThree.moveTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightThree);
+            mPathThree.lineTo(mLeftViewWidth+currentMovedLentgh,mHeightThree);
 
             canvas.drawPath(mPathThree,mPaintThree);
         }else if(progressFloat >= 0.4 && progressFloat < 0.7){
-            mCurrentHeight = 20;
 
-            mPathOne.moveTo(0,20);
-            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(mLeftViewWidth,mHeightOne);
+            mPathOne.lineTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightOne);
             canvas.drawPath(mPathOne,mPaintOne);
 
-            mPathTwo.moveTo(totalMovedLength*0.2f,50);
-            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightTwo);
+            mPathTwo.lineTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightTwo);
             canvas.drawPath(mPathTwo,mPaintTwo);
 
-            mPathThree.moveTo(totalMovedLength*0.3f,80);
-            mPathThree.lineTo(totalMovedLength*0.4f,80);
+            mPathThree.moveTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightThree);
+            mPathThree.lineTo(mLeftViewWidth+totalMovedLength*0.4f,mHeightThree);
             canvas.drawPath(mPathThree,mPaintThree);
 
-            mPathFour.moveTo(totalMovedLength*0.4f,mCurrentHeight);
-            mPathFour.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathFour.moveTo(mLeftViewWidth+totalMovedLength*0.4f,mHeightFour);
+            mPathFour.lineTo(mLeftViewWidth+currentMovedLentgh,mHeightFour);
 
             canvas.drawPath(mPathFour,mPaintFour);
         }else if(progressFloat >= 0.7 && progressFloat <= 1.0){
-            mCurrentHeight = 50;
 
-            mPathOne.moveTo(0,20);
-            mPathOne.lineTo(totalMovedLength*0.2f,20);
+            mPathOne.moveTo(mLeftViewWidth,mHeightOne);
+            mPathOne.lineTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightOne);
             canvas.drawPath(mPathOne,mPaintOne);
 
-            mPathTwo.moveTo(totalMovedLength*0.2f,50);
-            mPathTwo.lineTo(totalMovedLength*0.3f,50);
+            mPathTwo.moveTo(mLeftViewWidth+totalMovedLength*0.2f,mHeightTwo);
+            mPathTwo.lineTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightTwo);
             canvas.drawPath(mPathTwo,mPaintTwo);
 
-            mPathThree.moveTo(totalMovedLength*0.3f,80);
-            mPathThree.lineTo(totalMovedLength*0.4f,80);
+            mPathThree.moveTo(mLeftViewWidth+totalMovedLength*0.3f,mHeightThree);
+            mPathThree.lineTo(mLeftViewWidth+totalMovedLength*0.4f,mHeightThree);
             canvas.drawPath(mPathThree,mPaintThree);
 
-            mPathFour.moveTo(totalMovedLength*0.4f,20);
-            mPathFour.lineTo(totalMovedLength*0.7f,20);
+            mPathFour.moveTo(mLeftViewWidth+totalMovedLength*0.4f,mHeightFour);
+            mPathFour.lineTo(mLeftViewWidth+totalMovedLength*0.7f,mHeightFour);
             canvas.drawPath(mPathFour,mPaintFour);
 
-            mPathFive.moveTo(totalMovedLength*0.7f,mCurrentHeight);
-            mPathFive.lineTo(currentMovedLentgh,mCurrentHeight);
+            mPathFive.moveTo(mLeftViewWidth+totalMovedLength*0.7f,mHeightFive);
+            mPathFive.lineTo(mLeftViewWidth+currentMovedLentgh,mHeightFive);
 
             canvas.drawPath(mPathFive,mPaintFive);
         }
 
-        canvas.drawBitmap(mBitmap,currentMovedLentgh,0,paintPointer);
+        canvas.drawBitmap(mBitmap,mLeftViewWidth+currentMovedLentgh,0,paintPointer);
 
     }
 

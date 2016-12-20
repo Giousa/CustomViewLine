@@ -2,15 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-    android:background="#66000000">
+              android:orientation="vertical">
+
 
     <com.giou.customprogressview.NumberProgressView
-        android:background="#66ff0000"
+        android:layout_marginTop="20dp"
         android:id="@+id/np_numberProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_margin="20dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="121px"
+        android:background="@drawable/leisure_data_progressbar"/>
+
 
     <Button
         android:id="@+id/btn_numberProgressBar"
